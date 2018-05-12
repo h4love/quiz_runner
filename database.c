@@ -10,13 +10,14 @@
 
 int read_db(FILE** file, char* filename)
 {
-	*file = fopen(filename, "r");
-	if (file == NULL){
+    *file = fopen(filename, "r");
+    if (file == NULL) {
 
-		return -1;
-	} else {
-		return 0;
-	}
+        return -1;
+    }
+    else {
+        return 0;
+    }
 }
 
 /*Переключение строки и вывод в параметр string 
@@ -25,20 +26,21 @@ int read_db(FILE** file, char* filename)
 
 int next_str(FILE** file, char string[512], int i)
 {
-	char *temp;
-	char tempstr[512];
-	
-	temp = fgets(tempstr, 512, *file);
-	if (temp == NULL){
-		return -1;
-	} else {
-		char *pos;
-		if ((pos=strchr(tempstr, '\n')) != NULL){
-   			*pos = '\0';
-		}
-		strcpy(string, tempstr);
-		return i+1;
-	}
+    char* temp;
+    char tempstr[512];
+
+    temp = fgets(tempstr, 512, *file);
+    if (temp == NULL) {
+        return -1;
+    }
+    else {
+        char* pos;
+        if ((pos = strchr(tempstr, '\n')) != NULL) {
+            *pos = '\0';
+        }
+        strcpy(string, tempstr);
+        return i + 1;
+    }
 }
 
 /*Ищет название темы и номера строк с диапазоном вопросов 
@@ -48,61 +50,62 @@ int next_str(FILE** file, char string[512], int i)
 
 int find_topic(FILE** file, char* string, int* start, int* end)
 {
-	int i = 0, j, li, equal = 0;
-	char str[32];
-	char pattern[] = "<.*>"; //Маска регулярного выражения
-	setlocale (LC_ALL, (const char *) "ru."); //Кириллические символы
-	
-	while(equal < 2){
-		i = next_str(file, str, i);
-		
-   		pcre *re; //Переменная для результата компиляции
-   		int options = 0; //Опции компиляции
-   		int erroffset;
-   		const char *error;
-   		
-   		re = pcre_compile ((char *) pattern, options, &error, &erroffset, NULL); //Компилируем регулярное выражение с маской
+    int i = 0, j, li, equal = 0;
+    char str[32];
+    char pattern[] = "<.*>"; //Маска регулярного выражения
+    setlocale(LC_ALL, (const char*)"ru."); //Кириллические символы
 
-   		if (re) {
-      		int count = 0;
-      		int ovector[30]; //Задаём массив для символов
-     		count = pcre_exec (re, NULL, (char *) str, strlen(str), 0, 0, ovector, 30); //Проверяем на соответствие маске
-      		if (count) {
-        		for (int c = 0; c < 2 * count; c += 2){
-        		    if (ovector[c] >= 0) {
-        		    	if (equal == 1){ //Конец строк с вопросами
-               				*end = i-2;
-               				*start = *start+1;
-               				equal = 2;
-               			}
-               			if ((*start == (i-1)) && (equal == 0)){ //Начало строк с вопросами
-               				char temp[ovector[c+1]];
-        		    		for (j = 1; j < ovector[c+1]-1; j++){
-        		    			temp[j-1] = str[j];
-        		    		}
-        		    		temp[ovector[c+1]-2] = '\0';
-        		    		strcpy(string, temp); //Записываем название темы
-               				equal = 1;
-               			}
-            		}
-         		}
-      		}
-   		}
-   
-   		pcre_free((void *) re); //Высвобождаем занятую ранее память
-   		
-		if (i == -1){
-			if (equal == 1){
-				*end = li-1;
-			}
-			break;
-		}
-		li = i;
-	}
-	
-	if (equal == 2){
-		return 0;
-	} else {
-		return -1;
-	}
+    while (equal < 2) {
+        i = next_str(file, str, i);
+
+        pcre* re; //Переменная для результата компиляции
+        int options = 0; //Опции компиляции
+        int erroffset;
+        const char* error;
+
+        re = pcre_compile((char*)pattern, options, &error, &erroffset, NULL); //Компилируем регулярное выражение с маской
+
+        if (re) {
+            int count = 0;
+            int ovector[30]; //Задаём массив для символов
+            count = pcre_exec(re, NULL, (char*)str, strlen(str), 0, 0, ovector, 30); //Проверяем на соответствие маске
+            if (count) {
+                for (int c = 0; c < 2 * count; c += 2) {
+                    if (ovector[c] >= 0) {
+                        if (equal == 1) { //Конец строк с вопросами
+                            *end = i - 2;
+                            *start = *start + 1;
+                            equal = 2;
+                        }
+                        if ((*start == (i - 1)) && (equal == 0)) { //Начало строк с вопросами
+                            char temp[ovector[c + 1]];
+                            for (j = 1; j < ovector[c + 1] - 1; j++) {
+                                temp[j - 1] = str[j];
+                            }
+                            temp[ovector[c + 1] - 2] = '\0';
+                            strcpy(string, temp); //Записываем название темы
+                            equal = 1;
+                        }
+                    }
+                }
+            }
+        }
+
+        pcre_free((void*)re); //Высвобождаем занятую ранее память
+
+        if (i == -1) {
+            if (equal == 1) {
+                *end = li - 1;
+            }
+            break;
+        }
+        li = i;
+    }
+
+    if (equal == 2) {
+        return 0;
+    }
+    else {
+        return -1;
+    }
 }
