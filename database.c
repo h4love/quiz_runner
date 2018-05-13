@@ -57,7 +57,13 @@ int find_topic(FILE** file, char* string, int* start, int* end)
 
     while (equal < 2) {
         i = next_str(file, str, i);
-
+		if (i == -1) {
+            if (equal == 1) {
+                *end = li - 1;
+				*start = *start + 1;
+            }
+            break;
+        }
         pcre* re; //Переменная для результата компиляции
         int options = 0; //Опции компиляции
         int erroffset;
@@ -76,6 +82,7 @@ int find_topic(FILE** file, char* string, int* start, int* end)
                             *end = i - 2;
                             *start = *start + 1;
                             equal = 2;
+							break;
                         }
                         if ((*start == (i - 1)) && (equal == 0)) { //Начало строк с вопросами
                             char temp[ovector[c + 1]];
@@ -89,16 +96,9 @@ int find_topic(FILE** file, char* string, int* start, int* end)
                     }
                 }
             }
-        }
+        }    
+		pcre_free((void*)re); //Высвобождаем занятую ранее память
 
-        pcre_free((void*)re); //Высвобождаем занятую ранее память
-
-        if (i == -1) {
-            if (equal == 1) {
-                *end = li - 1;
-            }
-            break;
-        }
         li = i;
     }
 
