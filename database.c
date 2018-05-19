@@ -11,8 +11,7 @@
 
 int read_db(FILE** file, char* filename)
 {
-    *file = fopen(filename, "r");
-    if (file == NULL) {
+    if ((*file = fopen(filename, "r")) == NULL) {
         return -1;
     }
     else {
