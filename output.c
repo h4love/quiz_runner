@@ -26,6 +26,17 @@ void print_header()
     printf("\n    %s████%s██%s  R  U  N  N  E  R  %s██%s████\n", gold, yellow, gbold, yellow, gold);
 }
 
+void print_miniheader()
+{
+    char* gbold = "\033[38;48;1;214m";
+    char* yellow = "\033[38;5;220m";
+    char* gold = "\033[38;5;214m";
+
+    clear();
+    printf("\n%s██%s██%s  Q U I Z  R U N N E R  %s██%s██\n\n", gold, yellow, gbold, yellow, gold);
+
+}
+
 void print_menu(int screen, char* arg1, char* arg2)
 {
     char* button = "\033[0;48;5;233;38;5;15m";
@@ -103,20 +114,30 @@ void print_menu(int screen, char* arg1, char* arg2)
         break;
     case 4:
         if (arg1 != NULL) {
-            printf("\n    %sСейчас ваша тема: %s\n", gbold, arg1);
-	        printf("    %sИспользуйте %s C %s для переключения\n", subtext,button,subtext);
-            printf("    %sНажмите %s S %s для выбора темы \n", subtext,button,subtext);
-            printf("\n    %s%s", text,arg2);
-            
+            printf("\n    %sСейчас ваша тема: %s\n\n", gbold, arg1);
+            printf("    %sИспользуйте %s C %s для переключения\n", subtext, button, subtext);
+            printf("    %sНажмите %s S %s для выбора темы \n", subtext, button, subtext);
+            printf("\n    %s%s", text, arg2);
         }
         else {
             printf("\n    %sВыберите тему\n\n", gbold);
-            printf("    %sИспользуйте %s C %s для переключения\n", subtext,button,subtext);
-            printf("    %sНажмите %s S %s для выбора темы \n", subtext,button,subtext);
-            printf("\n    %s%s", text,arg2);
+            printf("    %sИспользуйте %s C %s для переключения\n", subtext, button, subtext);
+            printf("    %sНажмите %s S %s для выбора темы \n", subtext, button, subtext);
+            printf("\n    %s%s", text, arg2);
         }
         rs();
         break;
     }
+}
+
+void print_game(char* arg1, char* arg2)
+{
+    /*char* button = "\033[0;48;5;233;38;5;15m";
+    char* text = "\033[0;49;38;5;214m";
+    char* subtext = "\033[0;49;38;5;248m";
+    char* red = "\033[0;49;38;5;196m";
+    char* gbold = "\033[1;49;39m";*/
+
+    print_miniheader();
 }
 

@@ -20,19 +20,20 @@ int main()
 
     int a = 0, b = 0, z = 0, i, x = 0;
     int filename_a = 0, nickname_a = 0, topic_a = 0;
-    
+
     //qst* list[15];
     
-    char button;
-    int screen = 0;
-
     /*for(i = a; i <= b; i++){
-			        now[i-a] = get_question(&file, i);
-		        }*/
+		now[i-a] = get_question(&file, i);
+    }*/
+
+    char button;
+    int screen = 0, difficulty = 0;
 
     while (1) {
         switch (screen) { //Экраны
-        case 0:
+        case 0: //Главное меню
+            i = 0;
             if (filename_a != 0) {
                 if (nickname_a != 0) {
                     print_menu(0, nickname, filename);
@@ -49,50 +50,63 @@ int main()
                     print_menu(0, NULL, NULL);
                 }
             }
-            button = enter_sym("1SCQ");
-            switch (button) {
-            case '1':
-                screen = 1;
-                break;
-            case 'S':
-                screen = 2;
-                break;
-            case 'C':
-                screen = 3;
-                break;
-            case 'Q':
-                printf("\n");
-                exit(0);
-                break;
+            while (i == 0) {
+                button = enter_sym("1SCQ");
+                switch (button) {
+                case '1':
+                    if ((filename_a == 1) && (nickname_a == 1)) {
+                        i = 1;
+                        screen = 1;
+                    }
+                    else {
+                        i = 0;
+                    }
+                    screen = 1;
+                    break;
+                case 'S':
+                    i = 1;
+                    screen = 2;
+                    break;
+                case 'C':
+                    i = 1;
+                    screen = 3;
+                    break;
+                case 'Q':
+                    i = 1;
+                    printf("\n");
+                    exit(0);
+                    break;
+                }
             }
             break;
-        case 1:
+        case 1: //Предигровой экран, выбор сложности
             i = 0;
-            if ((filename_a == 0) || (nickname_a == 0)) {
-                screen = 0;
-                break;
-            }
-            if (topic_a != 0){
+            if (topic_a != 0) {
                 print_menu(1, string, NULL);
-            } else {
+            }
+            else {
                 print_menu(1, NULL, NULL);
             }
-            while(i == 0){
+            while (i == 0) {
                 button = enter_sym("12TM");
                 switch (button) {
                 case '1':
                     if (topic_a == 1) {
                         i = 1;
+                        difficulty = 0;
                         screen = 9;
-                    } else {
+                    }
+                    else {
                         i = 0;
                     }
                     break;
                 case '2':
                     if (topic_a == 1) {
                         i = 1;
+                        difficulty = 1;
                         screen = 9;
-                    } else {
+                    }
+                    else {
                         i = 0;
                     }
                     break;
@@ -107,7 +121,7 @@ int main()
                 }
             }
             break;
-        case 2:
+        case 2: //Выбор словаря
             print_menu(2, "start", NULL);
             while (1) {
                 fgets(filename, 48, stdin);
@@ -125,7 +139,7 @@ int main()
             }
             screen = 0;
             break;
-        case 3:
+        case 3: //Выбор игрока
             if (nickname_a != 0) {
                 print_menu(3, nickname, NULL);
                 nickname_a = 0;
@@ -133,24 +147,28 @@ int main()
             else {
                 print_menu(3, NULL, NULL);
             }
-            while ((strlen(nickname) < 3) || (nickname_a == 0)){
+            while ((strlen(nickname) < 3) || (nickname_a == 0)) {
                 fgets(nickname, 24, stdin);
-                
+
                 if ((pos = strchr(nickname, '\n')) != NULL) {
                     *pos = '\0';
                 }
-                
+
                 if (strlen(nickname) < 3) {
                     print_menu(3, NULL, "error");
-                } else {
+                }
+                else {
                     nickname_a = 1;
                 }
             }
             screen = 0;
             break;
-        case 4:
-            a = 0; b = 0; z = 0; x = 0;
-            strcpy(tempstring,string);
+        case 4: //Выбор темы
+            a = 0;
+            b = 0;
+            z = 0;
+            x = 0;
+            strcpy(tempstring, string);
             z = find_topic(&file, string, &a, &b);
             if (topic_a == 1) {
                 print_menu(4, tempstring, string);
@@ -159,14 +177,15 @@ int main()
                 print_menu(4, NULL, string);
             }
 
-            while(x == 0){
+            while (x == 0) {
                 button = enter_sym("SCM");
                 switch (button) {
                 case 'C':
-                    if (z == -1){
+                    if (z == -1) {
                         a = 0;
-                    } else {
-                        a = b+1;
+                    }
+                    else {
+                        a = b + 1;
                     }
                     z = find_topic(&file, string, &a, &b);
                     if (topic_a == 1) {
@@ -175,11 +194,11 @@ int main()
                     else {
                         print_menu(4, NULL, string);
                     }
-                    
+
                     break;
                 case 'S':
                     x = 1;
-		            topic_a = 1;
+                    topic_a = 1;
                     screen = 1;
                     break;
                 case 'M':
@@ -187,7 +206,34 @@ int main()
                     screen = 1;
                     break;
                 }
-	        }
+            }
+            break;
+        case 9: //Игровой экран
+            i = 0;
+            print_game(nickname, NULL);
+            button = enter_sym("Q");
+            /*
+            while (i == 0) {
+                button = enter_sym("12TM");
+                switch (button) {
+                case '1':
+                    if (topic_a == 1) {
+                        i = 1;
+                        difficulty = 0;
+                        screen = 9;
+                    }
+                    else {
+                        i = 0;
+                    }
+                    break;
+                case '2':
+
+                case 'T':
+
+                case 'M':
+
+                }
+            }*/
             break;
         }
     }
